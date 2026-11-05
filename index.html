@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CS405 Project 1</title>
+  </head>
+  <body>
+    <main class="app">
+      <header>
+        <h1>CS405 Project 1</h1>
+        <span id="status" role="status" aria-live="polite" data-state="loading">Connecting to WebGPU…</span>
+      </header>
+      <div class="workspace">
+        <canvas id="scene" aria-label="Kavunlu Natürmort by Şeker Ahmed Paşa, displayed on a textured quad"></canvas>
+        <aside aria-label="Scene controls">
+          <h2>Scene</h2>
+          <p><strong>Kavunlu Natürmort</strong><br />Şeker Ahmed Paşa</p>
+          <dl>
+            <div><dt>Renderer</dt><dd id="renderer-name">Connecting…</dd></div>
+            <div><dt>Resolution</dt><dd id="resolution">—</dd></div>
+            <div><dt>Frame interval</dt><dd id="frame-time">—</dd></div>
+            <div><dt>Vertices</dt><dd id="vertex-count">0</dd></div>
+          </dl>
+          <button id="restart" type="button">Restart renderer</button>
+          <p class="error" id="error" role="alert" hidden></p>
+          <small>Frame interval is browser timing, not GPU rendering time.</small>
+        </aside>
+      </div>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
