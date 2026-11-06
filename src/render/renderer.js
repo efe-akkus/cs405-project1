@@ -2,7 +2,8 @@
 import paintingShader from '../shaders/painting.wgsl?raw';
 import { createPainting } from './painting.js';
 import { createObjectPass } from './objects.js';
-export async function createRenderer(canvas, { getScene, onError, onStats }) {
+import { multiply, scale } from '../math/mat4.js';
+export async function createRenderer(canvas, { getScene, getCamera, onError, onStats }) {
   if (!window.isSecureContext) {
     throw new Error('Open the application through localhost or HTTPS to use WebGPU.');
   }
@@ -65,20 +66,25 @@ export async function createRenderer(canvas, { getScene, onError, onStats }) {
     usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
   });
   device.queue.writeBuffer(vertexBuffer, 0, geometry.vertices);
-  const viewportBuffer = device.createBuffer({
-    label: 'Viewport scale',
-    size: 16,
-    usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+  const paintingView = painting.texture.createView();
+  const paintingBindings = Array.from({ length: 2 }, () => {
+    const buffer = device.createBuffer({
+      label: 'Painting model-to-clip matrix',
+      size: 64,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+    });
+    const group = device.createBindGroup({
+      layout: pipeline.getBindGroupLayout(0),
+      entries: [
+        { binding: 0, resource: { buffer } },
+        { binding: 1, resource: paintingView },
+        { binding: 2, resource: painting.sampler },
+      ],
+    });
+    return { buffer, group };
   });
-  const viewportScale = new Float32Array(4);
-  const bindGroup = device.createBindGroup({
-    layout: pipeline.getBindGroupLayout(0),
-    entries: [
-      { binding: 0, resource: { buffer: viewportBuffer } },
-      { binding: 1, resource: painting.texture.createView() },
-      { binding: 2, resource: painting.sampler },
-    ],
-  });
+  const imageAspect = painting.width / painting.height;
+  const paintingModel = scale(imageAspect, 1, 1);
 
   // The painting sits at clip depth 0.5. Positive world Z is closer to the viewer.
   const projection = new Float32Array([
@@ -127,12 +133,6 @@ export async function createRenderer(canvas, { getScene, onError, onStats }) {
           usage: GPUTextureUsage.RENDER_ATTACHMENT,
         });
       }
-      const aspect = width / height;
-      const imageAspect = painting.width / painting.height;
-      // Fit the complete image inside the viewport without stretching or cropping.
-      viewportScale[0] = 0.9 * Math.min(1, imageAspect / aspect);
-      viewportScale[1] = 0.9 * Math.min(1, aspect / imageAspect);
-      device.queue.writeBuffer(viewportBuffer, 0, viewportScale);
       const encoder = device.createCommandEncoder({ label: 'Scene encoder' });
       const pass = encoder.beginRenderPass({
         label: 'Draw scene',
@@ -149,14 +149,34 @@ export async function createRenderer(canvas, { getScene, onError, onStats }) {
           storeOp: 'store',
         }],
       });
-      pass.setPipeline(pipeline);
-      pass.setBindGroup(0, bindGroup);
-      pass.setVertexBuffer(0, vertexBuffer);
-      pass.draw(geometry.vertexCount);
-      projection[0] = viewportScale[0] / imageAspect;
-      projection[5] = viewportScale[1];
       const deltaSeconds = previousTime === null ? 0 : Math.min(0.05, (time - previousTime) / 1000);
-      const objectVertices = objectPass.draw(pass, projection, getScene(deltaSeconds));
+      const scene = getScene(deltaSeconds);
+      function drawView(index, x, viewportWidth, viewProjection) {
+        pass.setViewport(x, 0, viewportWidth, height, 0, 1);
+        pass.setScissorRect(x, 0, viewportWidth, height);
+        const { buffer, group } = paintingBindings[index];
+        device.queue.writeBuffer(buffer, 0, multiply(viewProjection, paintingModel));
+        pass.setPipeline(pipeline);
+        pass.setBindGroup(0, group);
+        pass.setVertexBuffer(0, vertexBuffer);
+        pass.draw(geometry.vertexCount);
+        return geometry.vertexCount + objectPass.draw(pass, viewProjection, scene, index);
+      }
+
+      const leftWidth = Math.floor((width - 1) / 2);
+      const rightWidth = width - leftWidth - 1;
+      const camera = leftWidth > 0 && getCamera(leftWidth / height, rightWidth / height);
+      let submittedVertices;
+      if (camera) {
+        submittedVertices = drawView(0, 0, leftWidth, camera.main);
+        submittedVertices += drawView(1, leftWidth + 1, rightWidth, camera.observer);
+        submittedVertices += objectPass.drawFrustum(pass, camera.observer, camera.lines);
+      } else {
+        const aspect = width / height;
+        projection[0] = 0.9 * Math.min(1 / imageAspect, 1 / aspect);
+        projection[5] = projection[0] * aspect;
+        submittedVertices = drawView(0, 0, width, projection);
+      }
       pass.end();
       device.queue.submit([encoder.finish()]);
 
@@ -165,7 +185,7 @@ export async function createRenderer(canvas, { getScene, onError, onStats }) {
       previousTime = time;
       if (time - lastReport >= 500) {
         const intervalMs = intervals.length ? intervals.reduce((sum, value) => sum + value, 0) / intervals.length : null;
-        onStats({ width, height, intervalMs, vertexCount: geometry.vertexCount + objectVertices });
+        onStats({ width, height, intervalMs, vertexCount: submittedVertices });
         intervals = [];
         lastReport = time;
       }
@@ -180,7 +200,7 @@ export async function createRenderer(canvas, { getScene, onError, onStats }) {
     destroy() {
       stop();
       vertexBuffer.destroy();
-      viewportBuffer.destroy();
+      for (const binding of paintingBindings) binding.buffer.destroy();
       objectPass.destroy();
       depthTexture?.destroy();
       painting.texture.destroy();

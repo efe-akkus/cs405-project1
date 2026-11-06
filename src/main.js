@@ -2,6 +2,7 @@ import './style.css';
 import { createRenderer } from './render/renderer.js';
 import { bindTransformControls } from './ui/transforms.js';
 import { createPlatformScene } from './scene/platform.js';
+import { bindCameraControls } from './ui/camera.js';
 
 const canvas = document.querySelector('#scene');
 const status = document.querySelector('#status');
@@ -24,18 +25,26 @@ const sceneTree = document.querySelector('#scene-tree');
 const animateTurntable = document.querySelector('#animate-turntable');
 const showAxes = document.querySelector('#show-axes');
 const platformScene = createPlatformScene();
+const cameraControls = document.querySelector('#camera-controls');
+const cameraLabels = document.querySelector('#camera-labels');
+const cameraEnabled = () => sceneMode.value === 'camera';
+const readCamera = bindCameraControls(canvas, cameraControls, cameraEnabled);
 document.querySelector('#scene-tree-content').textContent = platformScene.tree;
 
 function updateSceneControls() {
   const hierarchy = sceneMode.value === 'hierarchy';
-  transformControls.hidden = hierarchy;
-  matrixComparison.hidden = hierarchy;
+  const transforms = sceneMode.value === 'transforms';
+  transformControls.hidden = !transforms;
+  matrixComparison.hidden = !transforms;
+  cameraControls.hidden = !cameraEnabled();
+  cameraLabels.hidden = !cameraEnabled();
+  canvas.classList.toggle('orbit-enabled', cameraEnabled());
   hierarchyControls.hidden = !hierarchy;
   sceneTree.hidden = !hierarchy;
 }
 
 function getScene(deltaSeconds) {
-  if (sceneMode.value === 'hierarchy') {
+  if (sceneMode.value !== 'transforms') {
     return platformScene.frame(deltaSeconds, animateTurntable.checked, showAxes.checked);
   }
   return { models: getModels(), axes: [] };
@@ -66,6 +75,7 @@ async function start() {
   try {
     renderer = await createRenderer(canvas, {
       getScene,
+      getCamera: (aspect, observerAspect) => cameraEnabled() && readCamera(aspect, observerAspect),
       onError: showError,
       onStats: (stats) => {
         vertexCount.textContent = stats.vertexCount;

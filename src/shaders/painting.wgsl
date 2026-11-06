@@ -1,8 +1,4 @@
-struct Viewport {
-  scale: vec4f,
-};
-
-@group(0) @binding(0) var<uniform> viewport: Viewport;
+@group(0) @binding(0) var<uniform> modelToClip: mat4x4f;
 @group(0) @binding(1) var paintingTexture: texture_2d<f32>;
 @group(0) @binding(2) var paintingSampler: sampler;
 
@@ -14,7 +10,7 @@ struct VertexOutput {
 @vertex
 fn vertexMain(@location(0) position: vec3f, @location(1) uv: vec2f) -> VertexOutput {
   var output: VertexOutput;
-  output.position = vec4f(position.xy * viewport.scale.xy, position.z, 1.0);
+  output.position = modelToClip * vec4f(position, 1.0);
   output.uv = uv;
   return output;
 }

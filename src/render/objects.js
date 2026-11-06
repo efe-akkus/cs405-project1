@@ -1,5 +1,5 @@
 import objectShader from '../shaders/objects.wgsl?raw';
-import { multiply } from '../math/mat4.js';
+import { identity, multiply } from '../math/mat4.js';
 import { createCube } from './geometry.js';
 
 export async function createObjectPass(device, format, depthStencil) {
@@ -49,8 +49,15 @@ export async function createObjectPass(device, format, depthStencil) {
   });
   device.queue.writeBuffer(axisBuffer, 0, axisVertices);
 
-  const objectSlots = [];
-  const axisSlots = [];
+  // Each view has separate uniforms because both views are submitted together.
+  const objectSlots = [[], []];
+  const axisSlots = [[], []];
+  const frustumSlots = [];
+  const worldModel = [identity()];
+  const frustumBuffer = device.createBuffer({
+    size: 24 * cube.stride,
+    usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
+  });
   function drawInstances(pass, drawPipeline, vertices, vertexCount, matrices, projection, slots) {
     if (!matrices.length) return 0;
     pass.setPipeline(drawPipeline);
@@ -76,15 +83,20 @@ export async function createObjectPass(device, format, depthStencil) {
   }
 
   return {
-    draw(pass, projection, { models, axes }) {
-      const objectCount = drawInstances(pass, pipeline, vertexBuffer, cube.vertexCount, models, projection, objectSlots);
-      const axisCount = drawInstances(pass, axesPipeline, axisBuffer, axisVertices.length / 6, axes, projection, axisSlots);
+    draw(pass, projection, { models, axes }, viewIndex) {
+      const objectCount = drawInstances(pass, pipeline, vertexBuffer, cube.vertexCount, models, projection, objectSlots[viewIndex]);
+      const axisCount = drawInstances(pass, axesPipeline, axisBuffer, axisVertices.length / 6, axes, projection, axisSlots[viewIndex]);
       return objectCount + axisCount;
+    },
+    drawFrustum(pass, projection, lines) {
+      device.queue.writeBuffer(frustumBuffer, 0, lines);
+      return drawInstances(pass, axesPipeline, frustumBuffer, lines.length / 6, worldModel, projection, frustumSlots);
     },
     destroy() {
       vertexBuffer.destroy();
       axisBuffer.destroy();
-      for (const slot of [...objectSlots, ...axisSlots]) slot.buffer.destroy();
+      frustumBuffer.destroy();
+      for (const slot of [...objectSlots.flat(), ...axisSlots.flat(), ...frustumSlots]) slot.buffer.destroy();
     },
   };
 }

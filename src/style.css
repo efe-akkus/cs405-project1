@@ -41,3 +41,8 @@ fieldset .check { justify-content: flex-start; align-items: center; }
 fieldset .check input { width: auto; }
 #scene-tree { margin-top: 20px; }
 #scene-tree pre { line-height: 1.45; margin: 0; }
+
+.camera-labels { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 5px; font-size: 12px; }
+.orbit-enabled { cursor: grab; touch-action: none; }
+.orbit-enabled:active { cursor: grabbing; }
+#camera-controls dl { margin: 16px 0; }

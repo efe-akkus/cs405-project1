@@ -13,6 +13,7 @@
       </header>
       <div class="workspace">
         <div class="scene-view">
+          <div class="camera-labels" id="camera-labels" hidden><span>Orbit camera</span><span>Inspection camera</span></div>
           <canvas id="scene" aria-label="Kavunlu Natürmort by Şeker Ahmed Paşa, with a 3D scene in front"></canvas>
           <section id="matrix-comparison" class="matrices" aria-label="Model matrix comparison">
             <div><h2>T × R × S</h2><pre id="trs-matrix"></pre></div>
@@ -30,6 +31,7 @@
           <select id="scene-mode">
             <option value="transforms">Part A · Transformations</option>
             <option value="hierarchy">Part B · Scene graph</option>
+            <option value="camera">Part C · Camera</option>
           </select>
           <form id="transform-controls">
             <fieldset>
@@ -56,6 +58,24 @@
             <label class="check"><input id="animate-turntable" type="checkbox" checked /> Animate turntable</label>
             <label class="check"><input id="show-axes" type="checkbox" /> Show local axes</label>
             <p>Axes: X red, Y green, Z blue.</p>
+          </fieldset>
+          <fieldset id="camera-controls" hidden>
+            <legend>Part C · Camera</legend>
+            <label for="projection-mode">Projection</label>
+            <select id="projection-mode">
+              <option value="perspective">Perspective</option>
+              <option value="orthographic">Orthographic</option>
+            </select>
+            <label for="camera-fov">Vertical FOV (°) <output id="camera-fov-value" for="camera-fov">40</output></label>
+            <input id="camera-fov" type="range" min="30" max="55" step="1" value="40" />
+            <dl>
+              <div><dt>Eye</dt><dd id="camera-eye"></dd></div>
+              <div><dt>Target</dt><dd id="camera-target"></dd></div>
+              <div><dt>Near</dt><dd id="camera-near"></dd></div>
+              <div><dt>Far</dt><dd id="camera-far"></dd></div>
+            </dl>
+            <button id="camera-reset" type="button">Reset camera</button>
+            <p>Drag in the left view to orbit. The yellow lines on the right outline the camera's frustum.</p>
           </fieldset>
           <dl>
             <div><dt>Renderer</dt><dd id="renderer-name">Connecting…</dd></div>

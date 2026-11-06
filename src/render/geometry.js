@@ -11,12 +11,12 @@ export function createTriangle() {
 // Two counterclockwise triangles with UV (0, 0) at the image's top-left.
 export function createQuad() {
   const vertices = new Float32Array([
-    -1, -1, 0.5,   0, 1,
-     1, -1, 0.5,   1, 1,
-     1,  1, 0.5,   1, 0,
-    -1, -1, 0.5,   0, 1,
-     1,  1, 0.5,   1, 0,
-    -1,  1, 0.5,   0, 0,
+    -1, -1,   0,   0, 1,
+     1, -1,   0,   1, 1,
+     1,  1,   0,   1, 0,
+    -1, -1,   0,   0, 1,
+     1,  1,   0,   1, 0,
+    -1,  1,   0,   0, 0,
   ]);
   return { vertices, vertexCount: 6, stride: 5 * Float32Array.BYTES_PER_ELEMENT };
 }
