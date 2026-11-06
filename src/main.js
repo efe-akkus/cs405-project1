@@ -1,6 +1,7 @@
 import './style.css';
 import { createRenderer } from './render/renderer.js';
 import { bindTransformControls } from './ui/transforms.js';
+import { createPlatformScene } from './scene/platform.js';
 
 const canvas = document.querySelector('#scene');
 const status = document.querySelector('#status');
@@ -10,11 +11,38 @@ const rendererName = document.querySelector('#renderer-name');
 const resolution = document.querySelector('#resolution');
 const frameTime = document.querySelector('#frame-time');
 const vertexCount = document.querySelector('#vertex-count');
+const transformControls = document.querySelector('#transform-controls');
 const getModels = bindTransformControls(
-  document.querySelector('#transform-controls'),
+  transformControls,
   document.querySelector('#trs-matrix'),
   document.querySelector('#srt-matrix'),
 );
+const sceneMode = document.querySelector('#scene-mode');
+const hierarchyControls = document.querySelector('#hierarchy-controls');
+const matrixComparison = document.querySelector('#matrix-comparison');
+const sceneTree = document.querySelector('#scene-tree');
+const animateTurntable = document.querySelector('#animate-turntable');
+const showAxes = document.querySelector('#show-axes');
+const platformScene = createPlatformScene();
+document.querySelector('#scene-tree-content').textContent = platformScene.tree;
+
+function updateSceneControls() {
+  const hierarchy = sceneMode.value === 'hierarchy';
+  transformControls.hidden = hierarchy;
+  matrixComparison.hidden = hierarchy;
+  hierarchyControls.hidden = !hierarchy;
+  sceneTree.hidden = !hierarchy;
+}
+
+function getScene(deltaSeconds) {
+  if (sceneMode.value === 'hierarchy') {
+    return platformScene.frame(deltaSeconds, animateTurntable.checked, showAxes.checked);
+  }
+  return { models: getModels(), axes: [] };
+}
+
+sceneMode.addEventListener('change', updateSceneControls);
+updateSceneControls();
 let renderer;
 
 function showError(error) {
@@ -37,7 +65,7 @@ async function start() {
   errorMessage.hidden = true;
   try {
     renderer = await createRenderer(canvas, {
-      getModels,
+      getScene,
       onError: showError,
       onStats: (stats) => {
         vertexCount.textContent = stats.vertexCount;

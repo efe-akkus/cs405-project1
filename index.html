@@ -13,15 +13,24 @@
       </header>
       <div class="workspace">
         <div class="scene-view">
-          <canvas id="scene" aria-label="Kavunlu Natürmort by Şeker Ahmed Paşa, with three transformed objects in front"></canvas>
-          <section class="matrices" aria-label="Model matrix comparison">
+          <canvas id="scene" aria-label="Kavunlu Natürmort by Şeker Ahmed Paşa, with a 3D scene in front"></canvas>
+          <section id="matrix-comparison" class="matrices" aria-label="Model matrix comparison">
             <div><h2>T × R × S</h2><pre id="trs-matrix"></pre></div>
             <div><h2>S × R × T</h2><pre id="srt-matrix"></pre></div>
+          </section>
+          <section id="scene-tree" hidden>
+            <h2>Scene tree</h2>
+            <pre id="scene-tree-content"></pre>
           </section>
         </div>
         <aside aria-label="Scene controls">
           <h2>Scene</h2>
           <p><strong>Kavunlu Natürmort</strong><br />Şeker Ahmed Paşa</p>
+          <label class="scene-mode" for="scene-mode">View</label>
+          <select id="scene-mode">
+            <option value="transforms">Part A · Transformations</option>
+            <option value="hierarchy">Part B · Scene graph</option>
+          </select>
           <form id="transform-controls">
             <fieldset>
               <legend>Part A · Middle object</legend>
@@ -42,6 +51,12 @@
               <input id="transform-size" name="size" type="range" min="0.15" max="0.65" step="0.01" value="0.4" />
             </fieldset>
           </form>
+          <fieldset id="hierarchy-controls" hidden>
+            <legend>Part B · Turntable</legend>
+            <label class="check"><input id="animate-turntable" type="checkbox" checked /> Animate turntable</label>
+            <label class="check"><input id="show-axes" type="checkbox" /> Show local axes</label>
+            <p>Axes: X red, Y green, Z blue.</p>
+          </fieldset>
           <dl>
             <div><dt>Renderer</dt><dd id="renderer-name">Connecting…</dd></div>
             <div><dt>Resolution</dt><dd id="resolution">—</dd></div>

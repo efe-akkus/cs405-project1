@@ -2,7 +2,7 @@
 import paintingShader from '../shaders/painting.wgsl?raw';
 import { createPainting } from './painting.js';
 import { createObjectPass } from './objects.js';
-export async function createRenderer(canvas, { getModels, onError, onStats }) {
+export async function createRenderer(canvas, { getScene, onError, onStats }) {
   if (!window.isSecureContext) {
     throw new Error('Open the application through localhost or HTTPS to use WebGPU.');
   }
@@ -51,7 +51,7 @@ export async function createRenderer(canvas, { getModels, onError, onStats }) {
       primitive: { topology: 'triangle-list' },
       depthStencil,
     });
-    objectPass = await createObjectPass(device, outputFormat, depthStencil, getModels().length);
+    objectPass = await createObjectPass(device, outputFormat, depthStencil);
   } catch (error) {
     painting?.texture.destroy();
     context.unconfigure();
@@ -155,7 +155,8 @@ export async function createRenderer(canvas, { getModels, onError, onStats }) {
       pass.draw(geometry.vertexCount);
       projection[0] = viewportScale[0] / imageAspect;
       projection[5] = viewportScale[1];
-      const objectVertices = objectPass.draw(pass, projection, getModels());
+      const deltaSeconds = previousTime === null ? 0 : Math.min(0.05, (time - previousTime) / 1000);
+      const objectVertices = objectPass.draw(pass, projection, getScene(deltaSeconds));
       pass.end();
       device.queue.submit([encoder.finish()]);
 

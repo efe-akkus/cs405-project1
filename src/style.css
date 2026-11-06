@@ -33,3 +33,11 @@ fieldset output { font-variant-numeric: tabular-nums; }
 .matrices pre { margin: 0; font-size: 12px; line-height: 1.5; }
 
 .scene-view { min-width: 0; }
+
+[hidden] { display: none !important; }
+.scene-mode { display: block; font-size: 12px; margin-bottom: 4px; }
+#scene-mode { width: 100%; margin-bottom: 14px; }
+fieldset .check { justify-content: flex-start; align-items: center; }
+fieldset .check input { width: auto; }
+#scene-tree { margin-top: 20px; }
+#scene-tree pre { line-height: 1.45; margin: 0; }
