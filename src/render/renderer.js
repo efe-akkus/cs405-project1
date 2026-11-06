@@ -1,7 +1,8 @@
 // WebGPU setup follows the device/context/pass structure in Week04/lab3-starter/main.js.
 import paintingShader from '../shaders/painting.wgsl?raw';
 import { createPainting } from './painting.js';
-export async function createRenderer(canvas, { onError, onStats }) {
+import { createObjectPass } from './objects.js';
+export async function createRenderer(canvas, { getModels, onError, onStats }) {
   if (!window.isSecureContext) {
     throw new Error('Open the application through localhost or HTTPS to use WebGPU.');
   }
@@ -25,6 +26,8 @@ export async function createRenderer(canvas, { onError, onStats }) {
     throw error;
   }
 
+  const depthStencil = { format: 'depth24plus', depthWriteEnabled: true, depthCompare: 'less' };
+  let objectPass;
   let painting;
   let pipeline;
   try {
@@ -46,7 +49,9 @@ export async function createRenderer(canvas, { onError, onStats }) {
       },
       fragment: { module, entryPoint: 'fragmentMain', targets: [{ format: outputFormat }] },
       primitive: { topology: 'triangle-list' },
+      depthStencil,
     });
+    objectPass = await createObjectPass(device, outputFormat, depthStencil, getModels().length);
   } catch (error) {
     painting?.texture.destroy();
     context.unconfigure();
@@ -75,6 +80,14 @@ export async function createRenderer(canvas, { onError, onStats }) {
     ],
   });
 
+  // The painting sits at clip depth 0.5. Positive world Z is closer to the viewer.
+  const projection = new Float32Array([
+    1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, -0.2, 0,
+    0, 0, 0.5, 1,
+  ]);
+  let depthTexture;
   let stopped = false;
   let animationId = 0;
   let previousTime = null;
@@ -104,9 +117,15 @@ export async function createRenderer(canvas, { onError, onStats }) {
       const limit = device.limits.maxTextureDimension2D;
       const width = Math.max(1, Math.min(limit, Math.round(bounds.width * dpr)));
       const height = Math.max(1, Math.min(limit, Math.round(bounds.height * dpr)));
-      if (canvas.width !== width || canvas.height !== height) {
+      if (!depthTexture || canvas.width !== width || canvas.height !== height) {
         canvas.width = width;
         canvas.height = height;
+        depthTexture?.destroy();
+        depthTexture = device.createTexture({
+          size: [width, height],
+          format: depthStencil.format,
+          usage: GPUTextureUsage.RENDER_ATTACHMENT,
+        });
       }
       const aspect = width / height;
       const imageAspect = painting.width / painting.height;
@@ -116,7 +135,13 @@ export async function createRenderer(canvas, { onError, onStats }) {
       device.queue.writeBuffer(viewportBuffer, 0, viewportScale);
       const encoder = device.createCommandEncoder({ label: 'Scene encoder' });
       const pass = encoder.beginRenderPass({
-        label: 'Draw painting',
+        label: 'Draw scene',
+        depthStencilAttachment: {
+          view: depthTexture.createView(),
+          depthClearValue: 1,
+          depthLoadOp: 'clear',
+          depthStoreOp: 'discard',
+        },
         colorAttachments: [{
           view: context.getCurrentTexture().createView({ format: outputFormat }),
           clearValue: { r: 0.09, g: 0.185, b: 0.265, a: 1 },
@@ -128,6 +153,9 @@ export async function createRenderer(canvas, { onError, onStats }) {
       pass.setBindGroup(0, bindGroup);
       pass.setVertexBuffer(0, vertexBuffer);
       pass.draw(geometry.vertexCount);
+      projection[0] = viewportScale[0] / imageAspect;
+      projection[5] = viewportScale[1];
+      const objectVertices = objectPass.draw(pass, projection, getModels());
       pass.end();
       device.queue.submit([encoder.finish()]);
 
@@ -136,7 +164,7 @@ export async function createRenderer(canvas, { onError, onStats }) {
       previousTime = time;
       if (time - lastReport >= 500) {
         const intervalMs = intervals.length ? intervals.reduce((sum, value) => sum + value, 0) / intervals.length : null;
-        onStats({ width, height, intervalMs, vertexCount: geometry.vertexCount });
+        onStats({ width, height, intervalMs, vertexCount: geometry.vertexCount + objectVertices });
         intervals = [];
         lastReport = time;
       }
@@ -152,6 +180,8 @@ export async function createRenderer(canvas, { onError, onStats }) {
       stop();
       vertexBuffer.destroy();
       viewportBuffer.destroy();
+      objectPass.destroy();
+      depthTexture?.destroy();
       painting.texture.destroy();
       context.unconfigure();
       device.destroy();

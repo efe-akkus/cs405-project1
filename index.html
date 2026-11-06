@@ -12,10 +12,36 @@
         <span id="status" role="status" aria-live="polite" data-state="loading">Connecting to WebGPU…</span>
       </header>
       <div class="workspace">
-        <canvas id="scene" aria-label="Kavunlu Natürmort by Şeker Ahmed Paşa, displayed on a textured quad"></canvas>
+        <div class="scene-view">
+          <canvas id="scene" aria-label="Kavunlu Natürmort by Şeker Ahmed Paşa, with three transformed objects in front"></canvas>
+          <section class="matrices" aria-label="Model matrix comparison">
+            <div><h2>T × R × S</h2><pre id="trs-matrix"></pre></div>
+            <div><h2>S × R × T</h2><pre id="srt-matrix"></pre></div>
+          </section>
+        </div>
         <aside aria-label="Scene controls">
           <h2>Scene</h2>
           <p><strong>Kavunlu Natürmort</strong><br />Şeker Ahmed Paşa</p>
+          <form id="transform-controls">
+            <fieldset>
+              <legend>Part A · Middle object</legend>
+              <label for="order">Transform order</label>
+              <select id="order" name="order">
+                <option value="trs">T × R × S</option>
+                <option value="srt">S × R × T</option>
+              </select>
+              <label for="transform-x">Translate X <output for="transform-x">0.28</output></label>
+              <input id="transform-x" name="x" type="range" min="-0.75" max="0.75" step="0.01" value="0.28" />
+              <label for="transform-y">Translate Y <output for="transform-y">-0.52</output></label>
+              <input id="transform-y" name="y" type="range" min="-0.8" max="0.6" step="0.01" value="-0.52" />
+              <label for="transform-z">Translate Z <output for="transform-z">0.9</output></label>
+              <input id="transform-z" name="z" type="range" min="0.65" max="1.4" step="0.01" value="0.9" />
+              <label for="transform-angle">Rotate Y (°) <output for="transform-angle">32</output></label>
+              <input id="transform-angle" name="angle" type="range" min="-90" max="90" step="1" value="32" />
+              <label for="transform-size">Scale <output for="transform-size">0.4</output></label>
+              <input id="transform-size" name="size" type="range" min="0.15" max="0.65" step="0.01" value="0.4" />
+            </fieldset>
+          </form>
           <dl>
             <div><dt>Renderer</dt><dd id="renderer-name">Connecting…</dd></div>
             <div><dt>Resolution</dt><dd id="resolution">—</dd></div>

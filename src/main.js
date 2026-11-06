@@ -1,5 +1,6 @@
 import './style.css';
 import { createRenderer } from './render/renderer.js';
+import { bindTransformControls } from './ui/transforms.js';
 
 const canvas = document.querySelector('#scene');
 const status = document.querySelector('#status');
@@ -9,6 +10,11 @@ const rendererName = document.querySelector('#renderer-name');
 const resolution = document.querySelector('#resolution');
 const frameTime = document.querySelector('#frame-time');
 const vertexCount = document.querySelector('#vertex-count');
+const getModels = bindTransformControls(
+  document.querySelector('#transform-controls'),
+  document.querySelector('#trs-matrix'),
+  document.querySelector('#srt-matrix'),
+);
 let renderer;
 
 function showError(error) {
@@ -31,6 +37,7 @@ async function start() {
   errorMessage.hidden = true;
   try {
     renderer = await createRenderer(canvas, {
+      getModels,
       onError: showError,
       onStats: (stats) => {
         vertexCount.textContent = stats.vertexCount;
