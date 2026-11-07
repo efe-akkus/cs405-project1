@@ -20,6 +20,9 @@ export function createPlatformScene() {
   let angle = 0.28;
   return {
     tree: describeTree(root),
+    reset() {
+      angle = 0.28;
+    },
     frame(deltaSeconds, animate, showAxes) {
       if (animate) angle = (angle + deltaSeconds * 0.8) % (2 * Math.PI);
       platform.local = multiply(platformOffset, rotationY(angle));

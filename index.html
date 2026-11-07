@@ -57,7 +57,6 @@
           <fieldset id="hierarchy-controls" hidden>
             <legend>Part B · Turntable</legend>
             <label class="check"><input id="animate-turntable" type="checkbox" checked /> Animate turntable</label>
-            <label class="check"><input id="show-axes" type="checkbox" /> Show local axes</label>
             <p>Axes: X red, Y green, Z blue.</p>
           </fieldset>
           <fieldset id="camera-controls" hidden>
@@ -101,6 +100,11 @@
             <p id="curve-segment"></p>
             <p id="curve-position"></p>
             <p id="curve-feedback" role="status"></p>
+          </fieldset>
+          <fieldset class="general-controls">
+            <legend>General</legend>
+            <label class="check"><input id="show-debug" type="checkbox" checked /> Show debug drawings</label>
+            <button id="reset-scene" type="button">Reset scene</button>
           </fieldset>
           <dl>
             <div><dt>Renderer</dt><dd id="renderer-name">Connecting…</dd></div>

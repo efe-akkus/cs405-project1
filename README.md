@@ -2,19 +2,19 @@
 
 Transformations, Projection and Curves from Paintings.
 
-This repository will contain one interactive WebGPU application combining transformations, a scene graph, camera controls, and curves traced over a painting from the Sakıp Sabancı Museum collection.
+This repository contains one interactive WebGPU application combining transformations, a scene graph, camera controls, and curves traced over a painting from the Sakıp Sabancı Museum collection.
 
 ## Current status
 
-The directory structure and planning documents are in place. The application and Vite setup have not been implemented yet. This repository is not a copy of the instructor's project starter.
+Parts A–D are implemented in one application, with view switching, scene reset, debug controls, browser frame timing, and submitted vertex counts. The final report, measurement record, and submission tag are pending.
 
-## Planned features
+## Features
 
 - A painting displayed on a textured plane, with at least three objects in front of it.
 - Interactive transformations and a comparison of T·R·S and S·R·T, with both matrices displayed.
 - A scene graph with at least five nodes, three hierarchy levels, animation, and local axes.
 - Orbit controls, perspective and orthographic projections, and a frustum view from a second camera.
-- Cubic Bézier curves, de Casteljau construction, at least three segments with C1 continuity, and a Catmull–Rom or B-spline curve.
+- Cubic Bézier curves, de Casteljau construction, at least three segments with C1 continuity, and a Catmull–Rom spline.
 - Control point placement and dragging, tangent-oriented animation, and normalized JSON export.
 - Frame-time and submitted vertex-count readouts, view controls, debug toggles, and scene reset.
 
@@ -33,7 +33,54 @@ The directory structure and planning documents are in place. The application and
 
 ## Running the application
 
-The Vite configuration and application entry files have not been added yet. After setup is complete, the application will run with `npm install` followed by `npm run dev`.
+Use Node.js 20.19+ or 22.12+ and a browser with WebGPU support.
+
+From the repository root, run the following commands.
+
+```sh
+npm install
+npm run dev
+```
+
+Open the local URL printed by Vite, normally http://127.0.0.1:5173/. Keep that terminal running while using the application. WebGPU requires localhost or HTTPS.
+
+To build and preview the production bundle, run the following commands.
+
+```sh
+npm run build
+npm run preview
+```
+
+## Controls
+
+| View or control | Behavior |
+|---|---|
+| View | Switch between Parts A, B, C, and D in the same application |
+| Part A | Adjust the middle object's XYZ translation, Y rotation, and uniform scale. Switch between TRS and SRT. Both model matrices appear below the canvas |
+| Part B | Toggle turntable animation. The two blocks inherit its rotation. The scene tree appears below the canvas |
+| Part C | Drag within the left viewport to orbit. Switch between perspective and orthographic projection. Change the perspective FOV. The fixed right camera shows the main camera's frustum |
+| Reset camera | Restore the initial orbit position, perspective projection, and FOV |
+| Part D | Switch between cubic Bézier and uniform Catmull–Rom. Drag control points, or select a point and use Place selected point before clicking the painting |
+| Path parameter t | Scrub through the three segments. Moving this slider pauses curve animation |
+| Animate along curve | Move the red arrow along the curve with its orientation following the tangent |
+| Show de Casteljau | Show intermediate interpolation levels for the active Bézier segment when debug drawings are enabled |
+| Reset trace | Restore the initial contour and parameter, and pause curve animation |
+| Export JSON | Download the current curve as curve.json, with coordinates normalized to the painting and an origin at the bottom-left |
+| Show debug drawings | Toggle local axes in Parts B/C and the control polygon and de Casteljau construction in Part D. Editing points remain available |
+| Reset scene | Restore transforms, turntable angle, camera settings, and the original Bézier trace. Restore the default animation and debug settings while keeping the current view |
+| Restart renderer | Reconnect to WebGPU while preserving scene controls |
+
+Bézier anchors are blue, handles are white, and the selected point is orange. Handles mirror at interior joins to enforce C1 continuity. A move that would place a point or its mirrored handle outside the painting is rejected.
+
+The default contour follows the melon slice's lower edge. The initial export is included in exports/curve.json. Replace it with a new export if the final trace is edited.
+
+## Performance readouts
+
+Frame interval is the mean browser animation-frame interval over approximately half a second. Gaps of 250 ms or longer, such as background-tab pauses, are excluded. This metric is not a GPU execution-time measurement.
+
+Vertices counts all vertices submitted for the painting, objects, axes, frustum, and curve geometry. Both camera views are counted in Part C.
+
+The current build has been checked in Chrome. Performance measurements and GPU details for the report still need to be recorded.
 
 ## Deliverables
 

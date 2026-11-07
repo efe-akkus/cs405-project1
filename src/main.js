@@ -24,7 +24,7 @@ const hierarchyControls = document.querySelector('#hierarchy-controls');
 const matrixComparison = document.querySelector('#matrix-comparison');
 const sceneTree = document.querySelector('#scene-tree');
 const animateTurntable = document.querySelector('#animate-turntable');
-const showAxes = document.querySelector('#show-axes');
+const showDebug = document.querySelector('#show-debug');
 const platformScene = createPlatformScene();
 const cameraControls = document.querySelector('#camera-controls');
 const cameraLabels = document.querySelector('#camera-labels');
@@ -53,10 +53,23 @@ function updateSceneControls() {
 function getScene(deltaSeconds) {
   if (curvesEnabled()) return { models: [], axes: [] };
   if (sceneMode.value !== 'transforms') {
-    return platformScene.frame(deltaSeconds, animateTurntable.checked, showAxes.checked);
+    return platformScene.frame(deltaSeconds, animateTurntable.checked, showDebug.checked);
   }
   return { models: getModels(), axes: [] };
 }
+
+document.querySelector('#reset-scene').addEventListener('click', () => {
+  transformControls.reset();
+  transformControls.dispatchEvent(new Event('input'));
+  platformScene.reset();
+  animateTurntable.checked = true;
+  showDebug.checked = true;
+  document.querySelector('#camera-reset').click();
+  document.querySelector('#curve-mode').value = 'bezier';
+  document.querySelector('#show-construction').checked = true;
+  document.querySelector('#curve-reset').click();
+  updateSceneControls();
+});
 
 sceneMode.addEventListener('change', updateSceneControls);
 updateSceneControls();
@@ -83,7 +96,7 @@ async function start() {
   try {
     renderer = await createRenderer(canvas, {
       getScene,
-      getCurves: (...args) => curvesEnabled() && readCurves(...args),
+      getCurves: (...args) => curvesEnabled() && readCurves(...args, showDebug.checked),
       getCamera: (aspect, observerAspect) => cameraEnabled() && readCamera(aspect, observerAspect),
       onError: showError,
       onStats: (stats) => {

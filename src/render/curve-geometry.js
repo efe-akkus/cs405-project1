@@ -1,6 +1,6 @@
 import { deCasteljau, evaluateCurve } from '../math/curves.js';
 
-export function createCurveGeometry(points, mode, parameter, imageAspect, worldPerPixel, selected, construction) {
+export function createCurveGeometry(points, mode, parameter, imageAspect, worldPerPixel, selected, construction, debug = true) {
   const vertices = [];
   const world = ({ x, y }) => ({ x: (2 * x - 1) * imageAspect, y: 2 * y - 1 });
   function vertex(point, color) {
@@ -37,8 +37,10 @@ export function createCurveGeometry(points, mode, parameter, imageAspect, worldP
 
   const shownPoints = points.map((point, index) => ({ point, index }))
     .filter(({ index }) => mode === 'bezier' || index % 3 === 0);
-  for (let i = 0; i < shownPoints.length - 1; i++) {
-    line(world(shownPoints[i].point), world(shownPoints[i + 1].point), [0.75, 0.75, 0.75], 1);
+  if (debug) {
+    for (let i = 0; i < shownPoints.length - 1; i++) {
+      line(world(shownPoints[i].point), world(shownPoints[i + 1].point), [0.75, 0.75, 0.75], 1);
+    }
   }
   let previous = evaluateCurve(points, mode, 0).position;
   for (let i = 1; i <= 192; i++) {

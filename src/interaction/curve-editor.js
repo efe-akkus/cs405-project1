@@ -110,13 +110,13 @@ export function bindCurveEditor(canvas, controls, enabled) {
   canvas.addEventListener('lostpointercapture', () => { pointer = null; });
   update();
 
-  return (paintingAspect, deltaSeconds, projection) => {
+  return (paintingAspect, deltaSeconds, projection, debug) => {
     imageAspect = paintingAspect;
     if (animate.checked) parameter.value = (Number(parameter.value) + deltaSeconds * 0.06) % 1;
     const bounds = canvas.getBoundingClientRect();
     const worldPerPixel = 2 / (bounds.height * projection[5]);
     const result = createCurveGeometry(points, mode.value, Number(parameter.value), imageAspect,
-      worldPerPixel, selected, construction.checked);
+      worldPerPixel, selected, construction.checked && debug, debug);
     const { current } = result;
     controls.querySelector('#curve-parameter-value').value = Number(parameter.value).toFixed(3);
     controls.querySelector('#curve-position').textContent = `(${current.position.x.toFixed(3)}, ${current.position.y.toFixed(3)})`;
