@@ -32,6 +32,7 @@
             <option value="transforms">Part A · Transformations</option>
             <option value="hierarchy">Part B · Scene graph</option>
             <option value="camera">Part C · Camera</option>
+            <option value="curves">Part D · Curves</option>
           </select>
           <form id="transform-controls">
             <fieldset>
@@ -76,6 +77,30 @@
             </dl>
             <button id="camera-reset" type="button">Reset camera</button>
             <p>Drag in the left view to orbit. The yellow lines on the right outline the camera's frustum.</p>
+          </fieldset>
+          <fieldset id="curve-controls" hidden>
+            <legend>Part D · Curve editor</legend>
+            <label for="curve-mode">Curve type</label>
+            <select id="curve-mode">
+              <option value="bezier">Cubic Bézier · C1</option>
+              <option value="catmull-rom">Catmull–Rom</option>
+            </select>
+            <label for="curve-parameter">Path parameter t <output id="curve-parameter-value" for="curve-parameter">0.300</output></label>
+            <input id="curve-parameter" type="range" min="0" max="1" step="0.001" value="0.3" />
+            <label class="check"><input id="animate-curve" type="checkbox" /> Animate along curve</label>
+            <label class="check"><input id="show-construction" type="checkbox" checked /> Show de Casteljau</label>
+            <label for="curve-selection">Selected control point</label>
+            <select id="curve-selection"></select>
+            <div class="curve-buttons">
+              <button id="curve-place" type="button" aria-pressed="false">Place selected point</button>
+              <button id="curve-reset" type="button">Reset trace</button>
+              <button id="curve-export" type="button">Export JSON</button>
+            </div>
+            <p>Drag the points to trace the melon. Blue points are anchors, white points are handles, and orange is the selected point.</p>
+            <p>Bézier handles mirror at the two joins to preserve C1 continuity. The red arrow follows the tangent.</p>
+            <p id="curve-segment"></p>
+            <p id="curve-position"></p>
+            <p id="curve-feedback" role="status"></p>
           </fieldset>
           <dl>
             <div><dt>Renderer</dt><dd id="renderer-name">Connecting…</dd></div>

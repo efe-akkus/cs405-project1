@@ -46,3 +46,9 @@ fieldset .check input { width: auto; }
 .orbit-enabled { cursor: grab; touch-action: none; }
 .orbit-enabled:active { cursor: grabbing; }
 #camera-controls dl { margin: 16px 0; }
+
+.curve-editing { touch-action: none; cursor: default; }
+.placing-point { cursor: crosshair; }
+.curve-buttons { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+button[aria-pressed="true"] { background: #d9e9f3; border-color: #286e9a; }
+#curve-feedback { color: #a32d22; }

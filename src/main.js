@@ -3,6 +3,7 @@ import { createRenderer } from './render/renderer.js';
 import { bindTransformControls } from './ui/transforms.js';
 import { createPlatformScene } from './scene/platform.js';
 import { bindCameraControls } from './ui/camera.js';
+import { bindCurveEditor } from './interaction/curve-editor.js';
 
 const canvas = document.querySelector('#scene');
 const status = document.querySelector('#status');
@@ -29,6 +30,9 @@ const cameraControls = document.querySelector('#camera-controls');
 const cameraLabels = document.querySelector('#camera-labels');
 const cameraEnabled = () => sceneMode.value === 'camera';
 const readCamera = bindCameraControls(canvas, cameraControls, cameraEnabled);
+const curveControls = document.querySelector('#curve-controls');
+const curvesEnabled = () => sceneMode.value === 'curves';
+const readCurves = bindCurveEditor(canvas, curveControls, curvesEnabled);
 document.querySelector('#scene-tree-content').textContent = platformScene.tree;
 
 function updateSceneControls() {
@@ -37,13 +41,17 @@ function updateSceneControls() {
   transformControls.hidden = !transforms;
   matrixComparison.hidden = !transforms;
   cameraControls.hidden = !cameraEnabled();
+  curveControls.hidden = !curvesEnabled();
   cameraLabels.hidden = !cameraEnabled();
   canvas.classList.toggle('orbit-enabled', cameraEnabled());
+  canvas.classList.toggle('curve-editing', curvesEnabled());
+  canvas.classList.toggle('placing-point', curvesEnabled() && document.querySelector('#curve-place').getAttribute('aria-pressed') === 'true');
   hierarchyControls.hidden = !hierarchy;
   sceneTree.hidden = !hierarchy;
 }
 
 function getScene(deltaSeconds) {
+  if (curvesEnabled()) return { models: [], axes: [] };
   if (sceneMode.value !== 'transforms') {
     return platformScene.frame(deltaSeconds, animateTurntable.checked, showAxes.checked);
   }
@@ -75,6 +83,7 @@ async function start() {
   try {
     renderer = await createRenderer(canvas, {
       getScene,
+      getCurves: (...args) => curvesEnabled() && readCurves(...args),
       getCamera: (aspect, observerAspect) => cameraEnabled() && readCamera(aspect, observerAspect),
       onError: showError,
       onStats: (stats) => {

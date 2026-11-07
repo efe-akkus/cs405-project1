@@ -1,0 +1,61 @@
+{
+  "painting": "Kavunlu Natürmort",
+  "artist": "Şeker Ahmed Paşa",
+  "type": "piecewise-cubic-bezier",
+  "coordinates": {
+    "units": "normalized",
+    "origin": "bottom-left",
+    "xRange": [
+      0,
+      1
+    ],
+    "yRange": [
+      0,
+      1
+    ]
+  },
+  "segments": 3,
+  "continuity": "C1",
+  "controlPoints": [
+    {
+      "x": 0.18,
+      "y": 0.4
+    },
+    {
+      "x": 0.16,
+      "y": 0.29
+    },
+    {
+      "x": 0.3,
+      "y": 0.19
+    },
+    {
+      "x": 0.48,
+      "y": 0.18
+    },
+    {
+      "x": 0.66,
+      "y": 0.17
+    },
+    {
+      "x": 0.75,
+      "y": 0.21
+    },
+    {
+      "x": 0.8,
+      "y": 0.31
+    },
+    {
+      "x": 0.85,
+      "y": 0.41
+    },
+    {
+      "x": 0.82,
+      "y": 0.44
+    },
+    {
+      "x": 0.8,
+      "y": 0.46
+    }
+  ]
+}

@@ -2,8 +2,9 @@
 import paintingShader from '../shaders/painting.wgsl?raw';
 import { createPainting } from './painting.js';
 import { createObjectPass } from './objects.js';
+import { createCurvePass } from './curves.js';
 import { multiply, scale } from '../math/mat4.js';
-export async function createRenderer(canvas, { getScene, getCamera, onError, onStats }) {
+export async function createRenderer(canvas, { getScene, getCamera, getCurves, onError, onStats }) {
   if (!window.isSecureContext) {
     throw new Error('Open the application through localhost or HTTPS to use WebGPU.');
   }
@@ -29,6 +30,7 @@ export async function createRenderer(canvas, { getScene, getCamera, onError, onS
 
   const depthStencil = { format: 'depth24plus', depthWriteEnabled: true, depthCompare: 'less' };
   let objectPass;
+  let curvePass;
   let painting;
   let pipeline;
   try {
@@ -53,7 +55,9 @@ export async function createRenderer(canvas, { getScene, getCamera, onError, onS
       depthStencil,
     });
     objectPass = await createObjectPass(device, outputFormat, depthStencil);
+    curvePass = await createCurvePass(device, outputFormat, depthStencil);
   } catch (error) {
+    objectPass?.destroy();
     painting?.texture.destroy();
     context.unconfigure();
     device.destroy();
@@ -176,6 +180,8 @@ export async function createRenderer(canvas, { getScene, getCamera, onError, onS
         projection[0] = 0.9 * Math.min(1 / imageAspect, 1 / aspect);
         projection[5] = projection[0] * aspect;
         submittedVertices = drawView(0, 0, width, projection);
+        const curveVertices = getCurves(imageAspect, deltaSeconds, projection);
+        if (curveVertices) submittedVertices += curvePass.draw(pass, projection, curveVertices);
       }
       pass.end();
       device.queue.submit([encoder.finish()]);
@@ -202,6 +208,7 @@ export async function createRenderer(canvas, { getScene, getCamera, onError, onS
       vertexBuffer.destroy();
       for (const binding of paintingBindings) binding.buffer.destroy();
       objectPass.destroy();
+      curvePass.destroy();
       depthTexture?.destroy();
       painting.texture.destroy();
       context.unconfigure();
