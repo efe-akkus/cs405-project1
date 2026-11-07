@@ -4,6 +4,7 @@ import { bindTransformControls } from './ui/transforms.js';
 import { createPlatformScene } from './scene/platform.js';
 import { bindCameraControls } from './ui/camera.js';
 import { bindCurveEditor } from './interaction/curve-editor.js';
+import { bindMeasurements } from './ui/measurements.js';
 
 const canvas = document.querySelector('#scene');
 const status = document.querySelector('#status');
@@ -73,9 +74,21 @@ document.querySelector('#reset-scene').addEventListener('click', () => {
 
 sceneMode.addEventListener('change', updateSceneControls);
 updateSceneControls();
+const measurements = bindMeasurements(
+  document.querySelector('#record-measurement'),
+  document.querySelector('#save-measurement'),
+  document.querySelector('#measurement-status'),
+  () => ({
+    view: sceneMode.value,
+    controls: Object.fromEntries([...document.querySelectorAll('aside input, aside select')].map((input) => [
+      input.id, input.type === 'checkbox' ? input.checked : input.value,
+    ])),
+  }),
+);
 let renderer;
 
 function showError(error) {
+  measurements.cancel("Measurement cancelled because the renderer stopped.");
   status.dataset.state = 'error';
   status.textContent = 'WebGPU unavailable';
   rendererName.textContent = 'Stopped';
@@ -95,6 +108,7 @@ async function start() {
   errorMessage.hidden = true;
   try {
     renderer = await createRenderer(canvas, {
+      onFrame: measurements.onFrame,
       getScene,
       getCurves: (...args) => curvesEnabled() && readCurves(...args, showDebug.checked),
       getCamera: (aspect, observerAspect) => cameraEnabled() && readCamera(aspect, observerAspect),

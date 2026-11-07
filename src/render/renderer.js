@@ -4,7 +4,7 @@ import { createPainting } from './painting.js';
 import { createObjectPass } from './objects.js';
 import { createCurvePass } from './curves.js';
 import { multiply, scale } from '../math/mat4.js';
-export async function createRenderer(canvas, { getScene, getCamera, getCurves, onError, onStats }) {
+export async function createRenderer(canvas, { getScene, getCamera, getCurves, onFrame, onError, onStats }) {
   if (!window.isSecureContext) {
     throw new Error('Open the application through localhost or HTTPS to use WebGPU.');
   }
@@ -14,6 +14,12 @@ export async function createRenderer(canvas, { getScene, getCamera, getCurves, o
   const adapter = await navigator.gpu.requestAdapter();
   if (!adapter) throw new Error('No WebGPU adapter was found. Check browser and graphics support.');
   const device = await adapter.requestDevice();
+  const adapterDetails = {
+    vendor: adapter.info.vendor,
+    architecture: adapter.info.architecture,
+    device: adapter.info.device,
+    description: adapter.info.description,
+  };
   const context = canvas.getContext('webgpu');
   if (!context) {
     device.destroy();
@@ -121,6 +127,7 @@ export async function createRenderer(canvas, { getScene, getCamera, getCurves, o
   function frame(time) {
     if (stopped) return;
     try {
+      const cpuStart = performance.now();
       // Match the physical canvas size to its CSS size and the display density.
       const bounds = canvas.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
@@ -185,6 +192,16 @@ export async function createRenderer(canvas, { getScene, getCamera, getCurves, o
       }
       pass.end();
       device.queue.submit([encoder.finish()]);
+      const cpuSubmissionMs = performance.now() - cpuStart;
+      onFrame({
+        time,
+        intervalMs: previousTime === null ? 0 : time - previousTime,
+        cpuSubmissionMs,
+        width,
+        height,
+        vertexCount: submittedVertices,
+        adapter: adapterDetails,
+      });
 
       // Ignore long gaps caused by background tabs; this is not a GPU timer.
       if (previousTime !== null && time - previousTime < 250) intervals.push(time - previousTime);

@@ -6,7 +6,7 @@ This repository contains one interactive WebGPU application combining transforma
 
 ## Current status
 
-Parts A–D are implemented in one application, with view switching, scene reset, debug controls, browser frame timing, and submitted vertex counts. The final report, measurement record, and submission tag are pending.
+Parts A–D are implemented in one application, with view switching, scene reset, debug controls, browser frame timing, and submitted vertex counts. Seven report screenshots and four 30-second performance recordings are available in `docs/`. The final report and submission tag are pending.
 
 ## Features
 
@@ -80,7 +80,9 @@ Frame interval is the mean browser animation-frame interval over approximately h
 
 Vertices counts all vertices submitted for the painting, objects, axes, frustum, and curve geometry. Both camera views are counted in Part C.
 
-The current build has been checked in Chrome. Performance measurements and GPU details for the report still need to be recorded.
+The production build has been checked in Chrome. See [performance measurements](docs/measurements.md) for the Apple M2 environment, four retained 30-second runs, and raw JSON samples. See [report screenshots](docs/screenshots/README.md) for the seven browser captures.
+
+Open Performance measurement to record a 3-second warm-up followed by 30 seconds of foreground frame intervals. Save measurement JSON downloads the complete sample set. Unlike the rolling readout, this recorder retains long foreground intervals and cancels when the tab becomes hidden or the canvas resolution changes.
 
 ## Deliverables
 

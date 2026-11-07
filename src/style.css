@@ -54,3 +54,6 @@ button[aria-pressed="true"] { background: #d9e9f3; border-color: #286e9a; }
 #curve-feedback { color: #a32d22; }
 
 .general-controls { margin-top: 14px; }
+
+#measurement-controls { margin: 16px 0; font-size: 12px; }
+#measurement-controls button { margin: 4px 0; }

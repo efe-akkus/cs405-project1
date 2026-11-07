@@ -112,6 +112,13 @@
             <div><dt>Frame interval</dt><dd id="frame-time">—</dd></div>
             <div><dt>Vertices</dt><dd id="vertex-count">0</dd></div>
           </dl>
+          <details id="measurement-controls">
+            <summary>Performance measurement</summary>
+            <p>3-second warm-up followed by a 30-second foreground recording. Keep this tab visible and the window size unchanged.</p>
+            <button id="record-measurement" type="button">Record 30 seconds</button>
+            <button id="save-measurement" type="button" disabled>Save measurement JSON</button>
+            <p id="measurement-status" role="status">Ready to record.</p>
+          </details>
           <button id="restart" type="button">Restart renderer</button>
           <p class="error" id="error" role="alert" hidden></p>
           <small>Frame interval is browser timing, not GPU rendering time.</small>
