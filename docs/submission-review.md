@@ -26,3 +26,7 @@ The numerical checks were executed directly against the existing modules without
 6. Submit the repository link and final report separately on SUCourse. Local preparation and a GitHub push do not complete that submission.
 
 Do not add a final tag until the final report and documentation review are complete. The report-draft commit and this review can be sent together when the student gives the instruction.
+
+## Follow-up: 11 November 2026
+
+The newly supplied Week 06/07 materials were compared with the project. The Catmull-Rom-to-Bezier conversion was adapted with attribution, and the earlier one-off numerical checks were supplemented by a reproducible Node test suite. All 13 tests and the production build pass. See [the course-material review](course-material-review.md). The original review above describes the state on 8 November; the PDF draft and benchmark recordings have not been regenerated in this follow-up. No commit or final tag has been created for these changes.

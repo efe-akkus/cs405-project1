@@ -51,6 +51,15 @@ npm run build
 npm run preview
 ```
 
+## Verification
+
+```sh
+npm test
+npm run build
+```
+
+The Node.js tests check course curve examples, C1 editing constraints, matrix composition, camera depth/frustum calculations, hierarchy/reset behavior and export consistency. They run without browser or additional test dependencies. See [the Week 06/07 review](docs/course-material-review.md) for source attribution, scope and limitations.
+
 ## Controls
 
 | View or control | Behavior |
@@ -95,7 +104,7 @@ The repository link and PDF must also be submitted to SUCourse. The deadline sta
 
 ## Sources and AI assistance
 
-Any material adapted from course examples will be credited. AI assistance is used for explanations and debugging; the assessed mathematics, camera, scene-graph, and curve code must be written by the student. See [the AI-use record](docs/ai-use.md).
+The uniform Catmull-Rom-to-Bezier conversion in `src/math/curves.js` is adapted from `C6.crBez` in the supplied `Week06/demos/w6a.js`. A rotation check in the test suite is adapted from `V3.rot` in `Week06/demos/w6b.js`. Lecture examples and the Week 07 texture comparison are documented in [the course-material review](docs/course-material-review.md). AI assistance is used for explanations and debugging; the assessed mathematics, camera, scene-graph, and curve code must be written by the student. See [the AI-use record](docs/ai-use.md).
 
 ## Language
 

@@ -29,30 +29,24 @@ export function deCasteljau(points, t) {
   return levels;
 }
 
-// Uniform Catmull–Rom passes through p1 and p2 at t = 0 and t = 1.
+// Adapted from C6.crBez in the supplied Week06/demos/w6a.js.
+// Central-difference tangents become cubic Bezier handles at one third length.
+function catmullRomControls([p0, p1, p2, p3]) {
+  return [
+    p1,
+    { x: p1.x + (p2.x - p0.x) / 6, y: p1.y + (p2.y - p0.y) / 6 },
+    { x: p2.x - (p3.x - p1.x) / 6, y: p2.y - (p3.y - p1.y) / 6 },
+    p2,
+  ];
+}
+
+// Uniform Catmull-Rom interpolates p1 and p2 at t = 0 and t = 1.
 export function catmullRom(points, t) {
-  const [p0, p1, p2, p3] = points;
-  function component(key) {
-    return 0.5 * (
-      2 * p1[key]
-      + (-p0[key] + p2[key]) * t
-      + (2 * p0[key] - 5 * p1[key] + 4 * p2[key] - p3[key]) * t * t
-      + (-p0[key] + 3 * p1[key] - 3 * p2[key] + p3[key]) * t * t * t
-    );
-  }
-  return { x: component('x'), y: component('y') };
+  return bezier(catmullRomControls(points), t);
 }
 
 export function catmullRomTangent(points, t) {
-  const [p0, p1, p2, p3] = points;
-  function component(key) {
-    return 0.5 * (
-      -p0[key] + p2[key]
-      + 2 * (2 * p0[key] - 5 * p1[key] + 4 * p2[key] - p3[key]) * t
-      + 3 * (-p0[key] + 3 * p1[key] - 3 * p2[key] + p3[key]) * t * t
-    );
-  }
-  return { x: component('x'), y: component('y') };
+  return bezierTangent(catmullRomControls(points), t);
 }
 
 export function evaluateCurve(points, mode, parameter) {
