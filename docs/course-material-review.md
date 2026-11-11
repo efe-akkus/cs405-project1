@@ -55,6 +55,10 @@ The application currently has only the base texture level. It does not claim tri
 
 ## Current report and measurement status
 
-The five-page draft now cites the Week 06 adaptation and tests and explains the Week 07 texture setup. All seven screenshots and five recordings were refreshed on 11 November from the current production build, including separate Bezier and Catmull-Rom runs. The source/bundle fingerprints are saved in docs/measurements/build.json. Old measurement sets and exploratory files were removed at the student's request; the report uses only the new set.
+The student-provided five-page report.pdf cites the Week 06 adaptation and tests and explains the Week 07 texture setup. It is the document reference for the supporting files and is preserved without edits. All seven screenshots and five recordings were refreshed on 11 November from the current production build, including separate Bezier and Catmull-Rom runs. The source/bundle fingerprints are saved in docs/measurements/build.json. Old measurement sets and exploratory files were removed at the student's request; the report uses only the new set.
 
-The measurement panel now shows the completed raw JSON in a collapsible section, allowing direct verification without relying on browser downloads. This changes result access, not the measurement method. The student-maintained AI-use record is unchanged. Final student review, commit approval, tagging and SUCourse delivery remain separate steps.
+The measurement panel now shows the completed raw JSON in a collapsible section, allowing direct verification without relying on browser downloads. This changes result access, not the measurement method. The current AI-use declaration is quoted from report.pdf in ai-use.md; its dated historical entry is retained. Final student approval, commit approval, tagging and SUCourse delivery remain separate steps.
+
+## Full cross-week attribution
+
+The report now contains twelve numbered instructor-material references and in-text attribution across Parts A-D. See [the full code attribution](code-attribution.md) for direct adaptations, structural references, mathematical correspondences, test data and texture-validation sources.

@@ -2,11 +2,15 @@
 
 Transformations, Projection and Curves from Paintings.
 
+**Efe Çağan Akkuş · Student ID: 32413**
+
 This repository contains one interactive WebGPU application combining transformations, a scene graph, camera controls, and curves traced over a painting from the Sakıp Sabancı Museum collection.
 
 ## Current status
 
-Parts A–D are implemented in one application, with view switching, scene reset, debug controls, browser frame timing, and submitted vertex counts. Seven report screenshots and five 30-second performance recordings are available in `docs/`. The final report and submission tag are pending.
+Parts A–D are implemented in one application, with view switching, scene reset, debug controls, browser frame timing, and submitted vertex counts. Seven report screenshots and five 30-second performance recordings are available in `docs/`. The student-provided five-page [report](report.pdf) is present. Final approval, the submission tag and SUCourse delivery remain pending.
+
+The painting is **Kavunlu Natürmort by Şeker Ahmed Paşa**. As explained in the report, it was selected for its clear melon contour and the student's personal preference for melon, especially with cheese in summer.
 
 ## Features
 
@@ -21,7 +25,7 @@ Parts A–D are implemented in one application, with view switching, scene reset
 ## Directory structure
 
 - `public/assets/`: painting image and other static assets.
-- `src/math/`: student-written vector, matrix, camera, and curve calculations.
+- `src/math/`: vector, matrix, camera, and curve calculations; course-source correspondences and adaptations are documented in `docs/code-attribution.md`.
 - `src/scene/`: scene nodes, scene setup, and animation.
 - `src/render/`: WebGPU infrastructure, geometry, textures, and debug drawing.
 - `src/interaction/`: camera controls and curve editing.
@@ -97,14 +101,20 @@ Open Performance measurement to record a 3-second warm-up followed by 30 seconds
 
 - The GitHub repository with the application and this README.
 - A curve JSON export.
-- A three-to-five-page `report.pdf` containing derivations, screenshots, debugging discussion, performance measurements, and an AI-use appendix.
+- The supplied five-page `report.pdf`, containing derivations, screenshots, debugging discussion, performance measurements, an AI-use appendix and twelve course-material references.
 - A `project1-final` tag or release created before the deadline.
 
 The repository link and PDF must also be submitted to SUCourse. The deadline stated in the handout is 8 November 2026 at 23:59 Istanbul time.
 
 ## Sources and AI assistance
 
-The uniform Catmull-Rom-to-Bezier conversion in `src/math/curves.js` is adapted from `C6.crBez` in the supplied `Week06/demos/w6a.js`. A rotation check in the test suite is adapted from `V3.rot` in `Week06/demos/w6b.js`. Lecture examples and the Week 07 texture comparison are documented in [the course-material review](docs/course-material-review.md). AI assistance is used for explanations and debugging; the assessed mathematics, camera, scene-graph, and curve code must be written by the student. See [the AI-use record](docs/ai-use.md).
+The uniform Catmull-Rom-to-Bezier conversion in `src/math/curves.js` is adapted from `C6.crBez` in the supplied `Week06/demos/w6a.js`. A rotation check in the test suite is adapted from `V3.rot` in `Week06/demos/w6b.js`. The full mapping of reused assets, direct adaptations, structural references, common formulas and validation examples is in [code attribution](docs/code-attribution.md). Lecture examples and the Week 07 texture comparison are also documented in [the course-material review](docs/course-material-review.md).
+
+The AI-use statement in Appendix B of the student-provided report reads:
+
+> OpenAI Codex assisted with planning, debugging, tests, measurement tooling and evidence. It also supported report drafting and final editing for grammar, clarity and academic tone.
+
+See [the AI-use record](docs/ai-use.md) for the same declaration and the retained historical planning entry.
 
 ## Language
 

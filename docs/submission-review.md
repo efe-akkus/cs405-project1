@@ -1,27 +1,27 @@
 # Submission review
 
-Updated: **11 November 2026**. The current production build is based on e0677d5 with a recorded-JSON viewer added to the measurement panel. Exact source/bundle fingerprints are in [build provenance](measurements/build.json). This is a preparation record, not confirmation of submission.
+Updated on **12 November 2026**, using the student-provided **report.pdf** as the document reference. Author: Efe Çağan Akkuş, student ID 32413. The report has five pages and is preserved byte-for-byte; only supporting files were aligned.
 
-## Verified
+## Current evidence
 
-| Area | Current evidence |
+| Area | Implementation / report correspondence |
 |---|---|
-| A | Three objects, UI transforms, TRS/SRT switch and both matrices; new screenshots. |
-| B | Nine nodes across four levels, local axes and inherited animation; leaf-origin derivation and reset tests. |
-| C | View derivation, degeneracy handling, WebGPU 0/1 depth endpoints and frustum corner tests; new perspective/orthographic captures with the same frozen scene pose. |
-| D | Bezier/de Casteljau, edited C1 joins, course-adapted Catmull-Rom, tangent evaluation and normalized export checks; new screenshots and separate measurements for both curve modes. |
-| E | Integrated view/reset/debug controls, timing/vertices and raw recorded-JSON access. Production build passes; all 13 tests pass. |
-| Evidence | Seven fresh screenshots and five fresh 30-second recordings, all at 980 × 558 backing resolution. Old measurement sets are removed. |
-| Report | project1-draft.pdf is revised for this current evidence set, with mathematical derivations, readable figure details, updated measurements and course-source attribution. |
+| A | Three objects, controls, TRS/SRT and both matrices; explanation and Figure 1 on page 1. |
+| B | Nine nodes/four levels, local axes and inherited animation; section begins on page 1, tree and verified leaf matrix are on page 2. |
+| C | lookAt derivation spans pages 2-3; projection/depth discussion and frozen-scene perspective/orthographic comparison are on page 3. |
+| D | Basis and endpoint proof on page 3; C1 joins, traced contour, direct Catmull-Rom adaptation and export discussion on page 4. |
+| E | Shared controls and measured performance on page 4; debugging discussion on page 5. |
+| Measurements | Five retained recordings from 11 November; Apple M2, reported Chromium UA 156.0.0.0, viewport 1280 x 900, canvas 980 x 558, DPR 1. Table values agree with the raw recordings. |
+| Appendices | Page 5: exact compact curve JSON, the report's AI-use statement and twelve numbered material references. |
+| Identity and choice | Page 1: Efe Çağan Akkuş / 32413; selection motivation includes the organic outline and personal preference for melon with cheese in summer. |
 
-The math tests do not replace full browser input testing. This evidence session verified view/projection/curve switching, animation toggles, reset controls and measurement completion; captured warning/error logs were empty. Measurements are browser frame intervals/CPU submission times, not GPU execution times.
+The existing test suite has thirteen passing tests and the production build passes. Source/bundle fingerprints in measurements/build.json identify the measured application; report/documentation edits do not change that build. Numerical tests do not replace complete browser interaction testing. The supporting requirements/page mapping is in report-requirements-check.md; course/function mapping is in code-attribution.md.
 
-## Remaining
+## Remaining delivery steps
 
-1. Student review of the revised draft and completion of the student-maintained detailed AI-use record.
-2. Reconcile historical AI-use wording in README.md and docs/PLAN.md during the student's final polish, as previously requested.
-3. After final approval, save report.pdf for submission.
-4. Commit/push only with a student-approved message, then create/push project1-final on the approved final commit.
-5. Submit the repository link and report.pdf separately on SUCourse.
+1. Obtain student approval of the aligned supporting files and existing report.
+2. Commit/push using the student's approved message. The local removal of project1-draft.pdf and addition of report.pdf are the student's report replacement.
+3. Create and push project1-final on the approved final commit.
+4. Submit the repository link and report.pdf separately on SUCourse.
 
-No final report copy, commit, tag or SUCourse submission has been created during this update.
+The report file already exists. No new report copy, PDF repair, commit, tag or SUCourse submission was performed during this alignment. The temporary Word owner file is ignored and left untouched.

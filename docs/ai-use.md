@@ -1,6 +1,12 @@
 # AI use record
 
-This file is updated throughout the project and serves as the source for the report's AI-use appendix.
+The current report declaration is Appendix B of the student-provided report.pdf. It is reproduced below without adding an exclusivity claim. The dated planning entry is retained as a historical record.
+
+## Statement in report.pdf
+
+> OpenAI Codex assisted with planning, debugging, tests, measurement tooling and evidence. It also supported report drafting and final editing for grammar, clarity and academic tone.
+
+## Historical entry
 
 ## 5 November 2026
 

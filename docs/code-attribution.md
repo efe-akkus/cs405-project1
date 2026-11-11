@@ -1,0 +1,45 @@
+# Instructor-provided code and material attribution
+
+Reviewed on 12 November 2026 against the student-provided five-page report.pdf, which is preserved without edits. Reference numbers match the PDF bibliography. Paths beginning with Week refer to the supplied course directory; project paths are relative to the repository root.
+
+## Attribution categories
+
+- **Direct adaptation:** a particular supplied helper was deliberately adapted into the application or tests.
+- **Structure reference:** the supplied example informed the organization of the implementation; it was not imported wholesale.
+- **Formula correspondence:** both implementations express the same standard mathematics. Similarity alone does not prove verbatim copying.
+- **Validation only:** existing code was checked against a later supplied example; that example did not generate or replace the implementation.
+- **Asset reuse:** supplied image bytes were reused directly.
+
+## Complete mapping
+
+| Area | Instructor-provided source | Project location | Use and differences |
+|---|---|---|---|
+| Assignment and evidence requirements | [1] CS405_Project1_2026.docx | Application structure and report | Requirements reference, not reusable implementation code. |
+| Painting | [2] Week01/assets/kavunlu.js | public/assets/kavunlu.jpg; src/render/painting.js | Asset reuse. The decoded JPEG and project image are byte-identical (69,819 bytes). Source comment is in painting.js. |
+| Device/context initialization | [3] Week04/lab3-starter/main.js, lines 23-31; [12] Week02./Week02/lab1-solution/main.js, lines 7-15 | src/render/renderer.js, createRenderer | Structure reference: adapter/device, webgpu context, preferred format and configuration. The application adds sRGB output, validation/error handling and cleanup. Lab 1 is also a matching basic API reference, not a separately imported module. |
+| Vertex buffers and shader/pipeline setup | [3] main.js, lines 49-104 | src/render/renderer.js; src/render/objects.js; src/render/curves.js; src/shaders/ | Structure reference: buffers/writeBuffer, vertex attributes, shader entry points, triangle lists and pipeline configuration. Our shaders/bindings and separate painting/object/curve passes differ from the lab's instanced storage-buffer scene. |
+| Depth buffer, resize and render loop | [3] main.js, depthStencil, resize, frame | src/render/renderer.js, frame | Structure reference: depth24plus/less, matching depth/canvas dimensions, encoder/pass/draw/submit and animation frames. Ours adds two viewports, frustum/curves and performance recording. |
+| Cube triangulation | [3] main.js, cube | src/render/geometry.js, createCube | Standard geometry correspondence: six faces, each using triangle indices 0,1,2,0,2,3. The lab writes position + normal; ours writes position + face color using indexed corners before expansion. No claim that the full cube implementation is a verbatim copy. |
+| Identity, multiply, translation, scale, X/Y/Z rotation | [4] Week04/lab3-starter/mat4.js, identity/multiply/translate/scale/rotX/rotY/rotZ | src/math/mat4.js | Standard formula correspondence. Both use column-major indexing; ours uses named function bodies and Float32Array results. The lab library is not imported. |
+| Homogeneous point/direction transformation | [4] mat4.js, apply | src/math/mat4.js, transformVec4 | Formula correspondence. The supplied apply assumes a point; ours accepts the input w, supporting both points and directions. |
+| Rigid inverse and transpose | [5] Week02./Week02/S3-Thu-Oct08-Transformations-SceneGraphs-IK.html, rigid inverse; [6] Week04/L3-Thu-Oct22-Viewing-Projection-Pipeline.html, camera placement inverse | src/math/mat4.js, transpose/inverseRigid | Mathematical reference: [R,t;0,1] inverse is [R^T,-R^T t;0,1]. The implementation uses an explicit transpose and translation dot products. This does not claim a supplied full transpose/inverse helper was copied. |
+| View matrix and vector helpers | [4] mat4.js, sub/cross/dot/norm/lookAt; [6] viewing lecture, lookAt basis | src/math/camera.js, subtract/cross/dot/normalize/lookAt | Standard formula correspondence: backward axis, two cross products and eye dot products. Ours rejects coincident eye/target, uses a different parallel-up fallback and returns Float32Array. |
+| Perspective/orthographic projection | [4] mat4.js, perspective; [6] viewing lecture, projection and depth | src/math/camera.js, perspective/orthographic | Formula reference. Perspective entries agree with the supplied WebGPU 0-to-1 depth matrix; orthographic follows the same course depth convention. |
+| Node model and hierarchy traversal | [5] transformations lecture, Node.update; [3] main.js hierarchy comments | src/scene/scene-graph.js | Same parent-first algorithm: world = parentWorld * local, then recurse. Ours uses plain nodes with stored matrices rather than the lecture's class with a local() method. Mesh sizing is separate from the inherited frame. |
+| Cubic Bezier weights | [8] Week06/L1-Mon-Nov02-Curves.html, slides 11/13; [11] Project1.zip, Project1/p1.js, bez | src/math/curves.js, bezier | Standard Bernstein formula correspondence. Ours forms four weights and reduces over x/y; the original demo expands x/y explicitly. This implementation existed before the Week 06 files were added. |
+| Lerp and de Casteljau | [7] Week06/demos/w6a.js, C6.lerp/C6.levels | src/math/curves.js, lerpPoint/deCasteljau | Same repeated-neighbor-interpolation algorithm; array handling differs. This is an algorithm/formula comparison, not a new Week 06 helper import. |
+| Bezier tangent | [7] w6a.js, C6.dbez; [8] slides 14/15 | src/math/curves.js, bezierTangent | Same derivative from successive control-point differences. The course evaluates a lower-degree Bezier; ours evaluates the explicit quadratic derivative weights. |
+| Mirrored handles and moving anchors | [7] w6a.js, joints demo enforce/drag handling; [8] slide 16; [11] p1.js, enforceC1 | src/math/curves.js, moveControlPoint | Same C1 condition: oppositeHandle = 2*joint - movedHandle. Anchor movement carries adjacent handles. Ours copies the point list and rejects edits that place any point outside the normalized painting. |
+| Segment selection and spline endpoints | [11] p1.js, curveAt/crPoint | src/math/curves.js, evaluateCurve | Standard piecewise-parameter structure: choose a segment and local t; repeat endpoint knots for Catmull-Rom. Our endpoint handling and return values are project-specific. |
+| Catmull-Rom to Bezier | [7] w6a.js, C6.crBez | src/math/curves.js, catmullRomControls/catmullRom/catmullRomTangent | **Direct production-code adaptation**, explicitly credited in the source. B0=P1, B1=P1+(P2-P0)/6, B2=P2-(P3-P1)/6, B3=P2. Existing Bezier and tangent functions evaluate the converted controls. |
+| Tangent-oriented animation | [8] slides 14/15; [7] arc-length demo tangent-frame principle | src/render/curve-geometry.js; src/interaction/curve-editor.js | Mathematical/behavioral reference. Our triangle arrow uses the analytic tangent in the painting's aspect-correct metric. The course's Canvas drawing and optional arc-length lookup table are not imported; constant arc-length speed is not implemented. |
+| Exact de Casteljau worked example | [8] slide 9 | test/curves.test.js, first test | Test-data reuse: (0,0),(2,4),(6,4),(8,0) at t=0.5, all interpolation levels, midpoint (4,3) and tangent (9,0). |
+| Exact Catmull-Rom worked example | [8] slide 20 | test/curves.test.js, lecture midpoint test | Test-data reuse: (0,0),(2,2),(4,0),(6,2), midpoint (3,1), endpoint tangents (2,0). |
+| Yaw-then-pitch oracle | [9] Week06/demos/w6b.js, V3.rot | test/matrices-camera.test.js, rotation comparison | **Direct test-only adaptation**, explicitly credited in source. Vector-form rotation is compared with Rx(pitch)*Ry(yaw). It is not used to animate the application. |
+| Color texture and sampler | [10] Week07/L1-Mon-Nov09-Texturing.html, slide 22 / Level 10 | src/render/painting.js; src/shaders/painting.wgsl | Validation only. Existing rgba8unorm-srgb texture, copyExternalImageToTexture, linear filters and textureSample workflow were compared with the newly supplied lecture. Ours uses clamp-to-edge and has no mip chain/anisotropy. The application code predates that comparison. |
+
+## What this mapping does not claim
+
+The course deck UI, Canvas 2D/software rasterizers, teapot data, B-spline implementation, arc-length table, mipmap builder, normal maps, lighting and multipass/NPR demos are not imported into this application. Project-specific scene placement, normalized melon trace, controls, frustum geometry, WebGPU curve/marker geometry and measurement interface are separate implementation work, developed with the AI assistance disclosed in the report.
+
+The instructor-provided material references above are independent of the AI-use declaration. A mathematical correspondence is not evidence that an entire file was copied, and referencing course material does not imply that the student independently authored generated code.
