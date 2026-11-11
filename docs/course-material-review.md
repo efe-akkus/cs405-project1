@@ -1,6 +1,6 @@
 # Week 06 and Week 07 review
 
-Reviewed on 11 November 2026 against the files newly supplied by the student. The existing application baseline is `d46b624`; the changes described below are not committed yet.
+Reviewed on 11 November 2026 against the files newly supplied by the student. The review began at application baseline `d46b624`; the code adaptation and tests were subsequently committed as `e0677d5`. The report revision described below is a later documentation update.
 
 ## Materials and relevance
 
@@ -53,8 +53,8 @@ The painting quad has UV (0,0) at the image's top-left; the normalized curve exp
 
 The application currently has only the base texture level. It does not claim trilinear mipmapping or anisotropic filtering. The lecture explains that linear minification filtering alone does not remove all aliasing; adding a mip chain is a possible later improvement, not an implemented feature. Normal maps would use a linear data format, but this project does not use them.
 
-## Report and measurement follow-up
+## Current report and measurement status
 
-The five-page `project1-draft.pdf` remains the previously reviewed draft. Its Catmull-Rom description is compatible with the adapted formula, but the final report should cite the Week 06 material and describe the new reproducible tests. The existing performance recordings remain historical measurements of the earlier revision, not fresh measurements of this working tree. The measured curve run used Bezier mode; no new performance claim is made for the Catmull-Rom adaptation.
+The five-page draft now cites the Week 06 adaptation and tests and explains the Week 07 texture setup. All seven screenshots and five recordings were refreshed on 11 November from the current production build, including separate Bezier and Catmull-Rom runs. The source/bundle fingerprints are saved in docs/measurements/build.json. Old measurement sets and exploratory files were removed at the student's request; the report uses only the new set.
 
-The student-maintained detailed AI-use record and earlier historical AI-use wording have not been edited. Final report approval, final commit approval, the submission tag and SUCourse delivery remain separate steps.
+The measurement panel now shows the completed raw JSON in a collapsible section, allowing direct verification without relying on browser downloads. This changes result access, not the measurement method. The student-maintained AI-use record is unchanged. Final student review, commit approval, tagging and SUCourse delivery remain separate steps.

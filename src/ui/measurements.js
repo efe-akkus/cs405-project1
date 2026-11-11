@@ -8,6 +8,7 @@ function downloadJson(result) {
 }
 
 export function bindMeasurements(recordButton, saveButton, status, getSceneState) {
+  const jsonOutput = document.querySelector('#measurement-json');
   let session;
   let result;
   let locked = [];
@@ -30,6 +31,7 @@ export function bindMeasurements(recordButton, saveButton, status, getSceneState
   });
   recordButton.addEventListener('click', () => {
     result = undefined;
+    jsonOutput.textContent = "";
     saveButton.disabled = true;
     session = { warmupStart: null, sampleStart: null, samples: [], scene: getSceneState() };
     const controls = document.querySelectorAll('aside fieldset, #scene-mode, #restart');
@@ -89,6 +91,7 @@ export function bindMeasurements(recordButton, saveButton, status, getSceneState
         method: 'Foreground requestAnimationFrame intervals. CPU submission measures JavaScript frame encoding through queue.submit. Neither metric is GPU execution time. No long foreground intervals are discarded.',
         samples: session.samples,
       };
+      jsonOutput.textContent = JSON.stringify(result, null, 2);
       session = undefined;
       unlock();
       saveButton.disabled = false;

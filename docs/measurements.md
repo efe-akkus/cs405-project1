@@ -1,51 +1,56 @@
 # Performance measurements
 
-## Environment
+## Current build and environment
 
-- Recorded on 8 November 2026 (Istanbul time), using the production Vite build served at `http://127.0.0.1:4173/`.
-- GPU: Apple M2, 10 GPU cores (macOS hardware information). WebGPU adapter reports vendor `apple`, architecture `metal-3`; device and description fields are empty.
-- Operating system: macOS 26.6.2.
-- Browser: Google Chrome 156.0.8078.80. The browser user-agent reduces the version to 156.0.0.0 and reports a compatibility macOS version; the full version and OS above were read from the installed application and system.
-- Canvas backing resolution: 2200 × 1145 pixels for all four runs; device pixel ratio: 2.
-- Application baseline: commit `65c7c1b`, with the measurement controls added in the working tree.
+All five retained recordings were taken on **11 November 2026** using the current production build served at `http://127.0.0.1:4173/`. The source baseline is `e0677d5`, plus the recorded-JSON display in the measurement panel. [Build provenance](measurements/build.json) records source and bundle SHA-256 fingerprints so the measured working tree can be identified without guessing a future commit hash.
+
+- GPU: Apple M2, 10 GPU cores, verified from macOS hardware information.
+- WebGPU adapter: vendor `apple`, architecture `metal-3`; device/description are empty.
+- OS: macOS 26.6.2, verified with the system version tool.
+- Browser: Codex in-app browser; running Chromium user-agent version `156.0.0.0`. The raw UA is saved in every recording. This is the running test environment, not the version of a separately installed browser. The UA's macOS 10.15.7 value is a compatibility value, not the measured OS version.
+- Fixed viewport: 1280 × 900 CSS pixels. Canvas: **980 × 558 backing pixels**, DPR 1, in every run. The temporary viewport override was reset after capture.
 
 ## Method
 
-Each run uses a 3-second warm-up followed by at least 30 seconds of foreground `requestAnimationFrame` intervals. The tab stays visible and the window size remains unchanged. Controls are disabled during recording. A hidden tab or changed canvas resolution cancels the run. Every recorded foreground interval is retained, including long intervals. P95 uses the nearest-rank percentile. Approximate FPS is 1000 divided by the mean interval.
+Each run warms up for 3 seconds, then records at least 30 seconds of foreground requestAnimationFrame intervals. The tab remains visible and the canvas resolution is fixed. Hiding the tab or resizing the canvas cancels recording. Every foreground interval is retained, including long ones. P95 uses the nearest-rank percentile; approximate FPS is 1000 / mean interval. The JSON displayed in the application's Recorded JSON section was saved directly to the files below, including all individual samples.
 
-CPU submission time covers JavaScript work from the start of the rendering callback through command encoding and `queue.submit`. It excludes asynchronous GPU execution and is not a GPU timer. Frame intervals include browser scheduling and display synchronization, so a result close to 60 FPS does not establish the maximum GPU throughput. Each scene has one retained run; these are observations on this machine, not a statistical benchmark across devices.
+CPU submission time covers JavaScript work from rendering-callback entry through command encoding and queue.submit. It excludes asynchronous GPU execution. Neither browser frame intervals nor CPU submission times are GPU execution times. Display synchronization limits the interpretation of approximately 60 FPS. One recording per scene/mode does not provide repeated-run variance or a cross-device benchmark.
 
-The live half-second readout excludes gaps of 250 ms or longer. The 30-second recorder deliberately uses a separate sample list and does not discard those intervals. Screenshots show the live readout, not the summary of the retained run.
+The small live readout uses a separate rolling mean and excludes gaps of 250 ms or longer. The recorder retains all foreground intervals; screenshot readouts are not the 30-second aggregate.
 
-## Scene conditions
+## Conditions
 
-- **Transforms:** default middle object, TRS order, three objects and painting; no animation.
-- **Hierarchy:** turntable animation on, local axes on; painting and hierarchical table/blocks.
-- **Camera:** perspective, 40° vertical FOV, default orbit position; animated scene and axes on. Both viewports and the yellow frustum are rendered.
-- **Curves:** default three-segment C1 Bézier trace, curve animation on, debug drawings and de Casteljau on. The retained run submitted 2169 vertices per frame.
-
-All exact controls, timestamps, adapter fields, and individual samples are retained in the linked JSON files.
+- A: default three objects, TRS, translation (0.28,-0.52,0.9), Y angle 32 degrees, uniform scale 0.4; static scene.
+- B: turntable animation and debug axes on.
+- C: perspective, 40-degree vertical FOV, default eye/target, near 0.65, far 6.5; turntable animation and axes on. Both viewports and frustum count towards submitted vertices.
+- D Bezier: default three-segment C1 contour, animation, debug and de Casteljau on.
+- D Catmull-Rom: default anchor knots, animation and debug on. De Casteljau does not render for this mode.
 
 ## Results
 
-| Scene | Samples | Mean interval (ms) | P95 (ms) | Max (ms) | Approx. FPS | Mean CPU submission (ms) | Submitted vertices |
+| Scene | Samples | Mean interval (ms) | P95 (ms) | Max (ms) | Approx. FPS | Mean CPU submission (ms) | Vertices |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| transforms | 1801 | 16.667 | 17.700 | 17.800 | 60.00 | 0.649 | 114–114 |
-| hierarchy | 1798 | 16.686 | 17.700 | 33.500 | 59.93 | 0.803 | 348–348 |
-| camera | 1779 | 16.872 | 17.700 | 149.400 | 59.27 | 0.953 | 720–720 |
-| curves | 1798 | 16.694 | 17.600 | 67.300 | 59.90 | 2.344 | 2169–2169 |
+| A - transforms | 1801 | 16.667 | 17.200 | 17.700 | 60.00 | 0.208 | 114 |
+| B - hierarchy | 1801 | 16.667 | 17.300 | 17.700 | 60.00 | 0.253 | 348 |
+| C - camera | 1801 | 16.667 | 17.100 | 17.700 | 60.00 | 0.239 | 720 |
+| D - Bezier | 1800 | 16.667 | 18.300 | 18.800 | 60.00 | 0.875 | 2169 |
+| D - Catmull-Rom | 1801 | 16.666 | 18.600 | 18.800 | 60.00 | 0.742 | 1467 |
 
-The two-view camera run submits both views plus the frustum. The curve run submits many line and marker vertices. Browser frame pacing remains close to the observed 60 Hz cadence; the raw maximum intervals show the occasional scheduling delays that a mean alone would hide. These results should not be interpreted as per-scene GPU execution costs.
+All five runs remain near the observed 60 FPS cadence. Curves submit more vertices because of the sampled trace and editor/debug geometry. The two curve modes differ in geometry as well as evaluation, so their CPU averages do not isolate the cost of the Catmull-Rom formula. These observations do not establish maximum GPU throughput.
 
-## Raw data and reproduction
+## Raw data
 
-- [Transforms](measurements/transforms.json)
-- [Hierarchy](measurements/hierarchy.json)
-- [Camera](measurements/camera.json)
-- [Curves](measurements/curves.json)
+- [A transforms](measurements/transforms.json)
+- [B hierarchy](measurements/hierarchy.json)
+- [C camera](measurements/camera.json)
+- [D Bezier](measurements/curves.json)
+- [D Catmull-Rom](measurements/curves-catmull-rom.json)
+- [Build provenance](measurements/build.json)
 
-Build with `npm run build`, start `npm run preview`, select the scene and matching settings, and open **Performance measurement**. Click **Record 30 seconds**, keep the tab visible without changing the window or camera, then click **Save measurement JSON** after completion. Restore the same backing resolution before comparing another run.
+Only this current set is retained in the project. There is no archive of old or exploratory measurements.
 
-## Screenshots
+## Reproduction
 
-See the [screenshot index](screenshots/README.md) for seven unedited browser captures. Initial exploratory runs at 2200 × 960 were superseded by the four consistent-resolution runs above and are not included in this table.
+Run npm run build and npm run preview. Use the same viewport/backing resolution and conditions above. Open Performance measurement, click Record 30 seconds and keep the tab visible. After completion, expand Recorded JSON to inspect/copy the full result, or use Save measurement JSON. Confirm the recorded canvasResolution before comparing runs.
+
+See [the screenshot index](screenshots/README.md) for the refreshed evidence images from the same build and capture session.

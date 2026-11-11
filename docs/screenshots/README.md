@@ -1,15 +1,15 @@
 # Report screenshots
 
-Captured from the production build in Chrome on 8 November 2026, with a 2200 × 1145 canvas backing resolution. Full-page browser captures include the controls and available explanatory panels. Performance readouts in the images are instantaneous rolling readouts; use [the measurement record](../measurements.md) for the retained 30-second results.
+All seven images were refreshed on **11 November 2026**, using the same current production build as the five performance recordings. Capture viewport: 1280 × 900 CSS pixels, DPR 1; canvas backing resolution: 980 × 558. Full-page captures may be taller than the viewport to retain the controls and supporting panels. See [measurements](../measurements.md) and [build provenance](../measurements/build.json).
 
 | File | Evidence |
 |---|---|
-| [Part A: TRS](part-a-trs.jpg) | Three objects, default controls, and both model matrices |
-| [Part A: SRT](part-a-srt.jpg) | Same controls with the transformation order changed |
-| [Part B: hierarchy](part-b-hierarchy.jpg) | Scene tree and local axes; turntable paused for capture |
-| [Part C: perspective](part-c-perspective.jpg) | Orbit camera and inspection view with perspective frustum |
-| [Part C: orthographic](part-c-orthographic.jpg) | Same camera position with orthographic projection |
-| [Part D: Bézier](part-d-bezier.jpg) | Three-segment C1 trace, control handles, de Casteljau and tangent arrow at t = 0.300 |
-| [Part D: Catmull–Rom](part-d-catmull-rom.jpg) | Spline through the trace anchors at t = 0.300 |
+| [A TRS](part-a-trs.jpg) | Three objects, default controls and both numerical matrices |
+| [A SRT](part-a-srt.jpg) | Identical controls with the composition order switched |
+| [B hierarchy](part-b-hierarchy.jpg) | Paused turntable, local axes and complete scene tree |
+| [C perspective](part-c-perspective.jpg) | Default orbit camera and fixed inspection/frustum view |
+| [C orthographic](part-c-orthographic.jpg) | Same camera pose and frozen object pose as the perspective capture |
+| [D Bezier](part-d-bezier.jpg) | C1 trace, control handles, de Casteljau and tangent arrow at global t = 0.300 |
+| [D Catmull-Rom](part-d-catmull-rom.jpg) | Spline through the anchors at global t = 0.300 |
 
-The camera screenshots use the same eye/target and FOV control value. The turntable continues animating between these two captures, so the blocks have different orientations. Curve animation is paused in the screenshots to make the constructions readable; it is enabled for the performance run.
+Turntable animation was paused across both camera captures, making the projection comparison consistent. Curve animation was paused for the two curve images; it was enabled for their performance recordings. Screenshot readouts are live rolling values, not run aggregates. The PDF clips canvas/contour details for legibility and reproduces the A matrices as text; the full-page files here preserve the UI context. Old images have been replaced.

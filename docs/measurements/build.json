@@ -1,0 +1,56 @@
+{
+  "recordedOn": "2026-11-11",
+  "timezone": "Europe/Istanbul",
+  "baseCommit": "e0677d58ab0b0cf1b7146ba892dbc458c0119997",
+  "applicationChangesSinceCommit": [
+    "index.html: recorded JSON viewer",
+    "src/ui/measurements.js: publish completed JSON to viewer"
+  ],
+  "sourceSha256": {
+    "index.html": "60f7651e22d7a6fd75821b44ea9e2cc5f3bb5188d154858991313ee0025c7fce",
+    "package.json": "271ac685c681e8c361499fd6bcc56ccfabcc1e5e60fe73684734197bfa571d9e",
+    "src/interaction/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/interaction/curve-editor.js": "27fbc10418a550098848f66711e6f82821fba9c4677c4ff848bf32552b0071c3",
+    "src/main.js": "b5ee3322aed074c54b22395107115da0954fe71c3348c5d95c5ffe0d5ce82bff",
+    "src/math/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/math/camera.js": "211b721d4ccc4575bf32feafb5b0c06ea51922374261818a52668fb188904143",
+    "src/math/curves.js": "8d356e747e8e6cebdc4ceede82f5cbad5737817a496b4affd16358ae14d44cbb",
+    "src/math/mat4.js": "d05c184c68d06bcdc49e68f84896014ab02567f5e4d0d8223bc0b76b597d4d1c",
+    "src/render/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/render/curve-geometry.js": "5956f5a3a45a8d02ce1caf317c55bb1a9230a2475b21ec5a628be99d5f3316e9",
+    "src/render/curves.js": "9c0e5c5e73c152865c6376f839cc77eb5157084c3f0498026d11c062fb7bc839",
+    "src/render/geometry.js": "853dd9bc81ca490486b5a4953282f66d102a335bd067dbfe9cbbf5874a8832f0",
+    "src/render/objects.js": "e25bd58af5e2e453357feeaf1a95011db904d5666ad9de4c5767ae6b3935660a",
+    "src/render/painting.js": "d753ef19ab0e096a894e4c0753b126cec222746744a952a0ad41290c9e023df3",
+    "src/render/renderer.js": "5beb3262b3d9f744562f569676aec8fb929e4d99ea3b2f4b27ed6ebfe3d9c0e9",
+    "src/scene/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/scene/curve-data.js": "f47856d5b764f895e0c883a58a6699567ab8ae006bcc05f1caf0007b9272e313",
+    "src/scene/platform.js": "ce2bf7bf33e621cb9a50cc3858523c5e223ba6b8aad7c19374797ebe222ac7e4",
+    "src/scene/scene-graph.js": "132abef8ce05ba5f3871a6ca1f4e485c4cd9af3277bd421a2c3d4466afb149b9",
+    "src/scene/transforms.js": "0a0e947c7dd21756663cb909602fb99f8618fcd1adcde8918b9d8d511b82972e",
+    "src/shaders/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/shaders/objects.wgsl": "8b9750c0a2b580299c15f0c409c8cba43dfef1629ffaff37e3756facb4e38ae4",
+    "src/shaders/painting.wgsl": "6ca737586616bd411b2876d83a80eec93f70c0ac20ef8c2b950ec35b5e07b15e",
+    "src/shaders/triangle.wgsl": "4dbbcc264ce727276a42327599424f14161493833275ce04159a548b414c061d",
+    "src/style.css": "b96e5c58b35d1967d6805d4c3a638ea8d54a810b8c617151f089d36b972970fa",
+    "src/ui/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/ui/camera.js": "ea1b95abee7eeaac85f85511411151e75991b4ec49c3b4568fd5cd36453673f3",
+    "src/ui/measurements.js": "3bb04f44e51a443baf408a829b0d137cb7fa766a73b79c3e5124c919c688d0b6",
+    "src/ui/transforms.js": "e5ebfc8235d154ea2c0a74bdbcd8a1bc4ad95235aab02332baaef709ae7dcde0"
+  },
+  "bundle": {
+    "path": "dist/assets/index-Dnk6UNxa.js",
+    "sha256": "afdacab41a066e728ad2b005ae1b0979f2c8a4a9ac11041a7c5d5d59925b454c"
+  },
+  "viewportCssPixels": [
+    1280,
+    900
+  ],
+  "recordings": [
+    "transforms.json",
+    "hierarchy.json",
+    "camera.json",
+    "curves.json",
+    "curves-catmull-rom.json"
+  ]
+}
